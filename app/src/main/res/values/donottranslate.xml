@@ -17,7 +17,7 @@
     <string name="md5">MD5</string>
     <string name="sha1">SHA-1</string>
     <string name="recaptcha">reCAPTCHA</string>
-    <string name="github_url">https://github.com/Afihacked</string>
+    <string name="github_url">https://github.com/Afihacked/Afitech.git</string>
     <string name="donation_url">https://saweria.co/afitech</string>
     <string name="website_url">https://newpipe.net/</string>
     <string name="privacy_policy_url">https://newpipe.net/legal/privacy/</string>
