@@ -2,7 +2,7 @@
 <h4 align="center">A rebranded and customized build based on the open-source NewPipe project.</h4>
 
 <p align="center">
-  <img src="assets/afitech_logo.png" width="150">
+  <img src="assets/afitech.png" width="150">
 </p>
 
 ---
