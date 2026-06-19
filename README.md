@@ -173,7 +173,6 @@ Data Layer
   <img src="assets/screenshots/downloads.png" width="220"/>
   <img src="assets/screenshots/settings.png" width="220"/>
 </p>
-```
 
 ```
 
