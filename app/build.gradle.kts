@@ -13,12 +13,18 @@ android {
         viewBinding = true
         buildConfig = true
     }
+    val appVersionName = "0.0.13"
+
     defaultConfig {
         applicationId = "com.afitech"
         minSdk = 27
         targetSdk = 36
-        versionCode = 12
-        versionName = "0.0.12"
+
+        versionName = appVersionName
+
+        versionCode = appVersionName
+            .substringAfterLast(".")
+            .toInt()
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }

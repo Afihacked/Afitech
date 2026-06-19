@@ -50,7 +50,11 @@ jobs:
 
       - name: Build Signed APK + AAB
         run: ./gradlew assembleRelease bundleRelease
-
+      - name: Rename AAB
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          mv app/build/outputs/bundle/release/app-release.aab \
+             app/build/outputs/bundle/release/AfiTech_v${VERSION}.aab
       - name: Build Metadata
         id: metadata
         run: |
@@ -89,7 +93,7 @@ jobs:
           tag_name: v${{ steps.version.outputs.version }}
           name: AfiTech v${{ steps.version.outputs.version }}
           body_path: RELEASE_NOTES.md
-          files: |
-            app/build/outputs/apk/release/*.apk
-            app/build/outputs/bundle/release/*.aab
+        files: |
+          app/build/outputs/apk/release/AfiTech_v*.apk
+          app/build/outputs/bundle/release/AfiTech_v*.aab 
           generate_release_notes: true
