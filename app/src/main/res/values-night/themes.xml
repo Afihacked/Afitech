@@ -1,0 +1,10 @@
+<resources>
+
+    <style name="Theme.AfitechTokV2" parent="Theme.Material3.DynamicColors.DayNight.NoActionBar">
+
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+
+    </style>
+
+</resources>

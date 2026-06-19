@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<navigation
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main_nav_graph"
+    app:startDestination="@id/homeFragment">
+
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.afitech.ui.home.HomeFragment"
+        android:label="Home"/>
+
+    <fragment
+        android:id="@+id/downloadsFragment"
+        android:name="com.afitech.ui.downloads.DownloadsFragment"
+        android:label="Downloads"/>
+
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.afitech.ui.settings.SettingsFragment"
+        android:label="Settings"/>
+
+</navigation>
