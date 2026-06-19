@@ -13,7 +13,7 @@ Fast • Modern • No Watermark TikTok Downloader
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Android-10%2B-brightgreen"/>
+  <img src="https://img.shields.io/badge/Android-8%2B-brightgreen"/>
   <img src="https://img.shields.io/badge/Kotlin-100%25-purple"/>
   <img src="https://img.shields.io/badge/Material%203-Modern-blue"/>
   <img src="https://img.shields.io/badge/MVVM-Architecture-orange"/>
