@@ -42,9 +42,9 @@ jobs:
       - name: Extract Version Info
         id: version
         run: |
-          VERSION=$(grep 'versionName =' app/build.gradle.kts | sed 's/.*"\(.*\)".*/\1/')
-          VERSION_CODE=$(grep 'versionCode =' app/build.gradle.kts | grep -o '[0-9]\+')
-
+         VERSION=$(grep 'val appVersionName' app/build.gradle.kts | sed 's/.*"\(.*\)".*/\1/')
+          VERSION_CODE=$(echo $VERSION | awk -F. '{print $NF}')
+      
           echo "version=$VERSION" >> $GITHUB_OUTPUT
           echo "version_code=$VERSION_CODE" >> $GITHUB_OUTPUT
 
