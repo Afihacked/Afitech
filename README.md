@@ -169,7 +169,6 @@ Data Layer
 
 <p align="center">
   <img src="assets/screenshots/home.png" width="220"/>
-  <img src="assets/screenshots/preview.png" width="220"/>
   <img src="assets/screenshots/downloads.png" width="220"/>
   <img src="assets/screenshots/settings.png" width="220"/>
 </p>
