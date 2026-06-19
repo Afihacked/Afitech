@@ -1,7 +1,7 @@
-# AfitechTok V2
+# Afitech
 
 <p align="center">
-  <img src="app/src/main/res/mipmap-xxxhdpi/ic_launcher.webp" width="140" alt="AfitechTok Logo"/>
+  <img src="app/src/main/res/mipmap-xxxhdpi/ic_launcher.webp" width="140" alt="Afitech Logo"/>
 </p>
 
 <h3 align="center">
