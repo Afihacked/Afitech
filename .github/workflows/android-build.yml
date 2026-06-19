@@ -1,13 +1,15 @@
-name: Android Signed Build
+name: Android Release
 
 on:
   push:
     branches:
       - main
 
-jobs:
-  build:
+permissions:
+  contents: write
 
+jobs:
+  build-release:
     runs-on: ubuntu-latest
 
     steps:
@@ -34,11 +36,30 @@ jobs:
       - name: Grant Execute Permission
         run: chmod +x gradlew
 
+      - name: Extract Version Name
+        id: version
+        run: |
+          VERSION=$(grep 'versionName =' app/build.gradle.kts | sed 's/.*"\(.*\)".*/\1/')
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
       - name: Build Signed APK
         run: ./gradlew assembleRelease
 
-      - name: Upload APK
-        uses: actions/upload-artifact@v4
+      - name: Check Tag Exists
+        id: tagcheck
+        run: |
+          if git ls-remote --tags origin "v${{ steps.version.outputs.version }}" | grep .; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Create Release
+        if: steps.tagcheck.outputs.exists == 'false'
+        uses: softprops/action-gh-release@v2
         with:
-          name: AfitechTok-Signed
-          path: app/build/outputs/apk/release/*.apk
+          tag_name: v${{ steps.version.outputs.version }}
+          name: AfiTech v${{ steps.version.outputs.version }}
+          generate_release_notes: true
+          files: |
+            app/build/outputs/apk/release/*.apk

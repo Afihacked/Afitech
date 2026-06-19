@@ -17,7 +17,7 @@ android {
         applicationId = "com.afitech"
         minSdk = 27
         targetSdk = 36
-        versionCode = 1
+        versionCode = 10
         versionName = "0.0.10"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -69,6 +69,7 @@ android {
                 "proguard-rules.pro"
             )
         }
+
         applicationVariants.all {
 
             val appName =
@@ -89,41 +90,41 @@ android {
                     "${appName}_v${vName}.apk"
             }
         }
+        compileOptions {
+            sourceCompatibility = JavaVersion.VERSION_11
+            targetCompatibility = JavaVersion.VERSION_11
+        }
+        kotlinOptions {
+            jvmTarget = "11"
+        }
     }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
-    }
-    kotlinOptions {
-        jvmTarget = "11"
-    }
-}
 
-dependencies {
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.appcompat)
-    implementation(libs.material)
-    implementation(libs.androidx.activity)
-    implementation(libs.androidx.constraintlayout)
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
+    dependencies {
+        implementation(libs.androidx.core.ktx)
+        implementation(libs.androidx.appcompat)
+        implementation(libs.material)
+        implementation(libs.androidx.activity)
+        implementation(libs.androidx.constraintlayout)
+        testImplementation(libs.junit)
+        androidTestImplementation(libs.androidx.junit)
+        androidTestImplementation(libs.androidx.espresso.core)
 
-    implementation(libs.room.runtime)
-    implementation(libs.room.ktx)
+        implementation(libs.room.runtime)
+        implementation(libs.room.ktx)
 
-    ksp(libs.room.compiler)
+        ksp(libs.room.compiler)
 
-    implementation("androidx.navigation:navigation-fragment-ktx:2.9.0")
-    implementation("androidx.navigation:navigation-ui-ktx:2.9.0")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.9.1")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.9.1")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.2")
+        implementation("androidx.navigation:navigation-fragment-ktx:2.9.0")
+        implementation("androidx.navigation:navigation-ui-ktx:2.9.0")
+        implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.9.1")
+        implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.9.1")
+        implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.2")
 //    implementation("io.coil-kt.coil3:coil:3.3.0")
-    implementation("com.github.bumptech.glide:glide:4.16.0")
-    implementation(
-        "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
-    )
-    implementation("androidx.media3:media3-exoplayer:1.8.0")
-    implementation("androidx.media3:media3-ui:1.8.0")
+        implementation("com.github.bumptech.glide:glide:4.16.0")
+        implementation(
+            "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
+        )
+        implementation("androidx.media3:media3-exoplayer:1.8.0")
+        implementation("androidx.media3:media3-ui:1.8.0")
+    }
 }
