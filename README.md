@@ -5,7 +5,7 @@
 </p>
 
 <h3 align="center">
-AfitechTok V2
+Afitech
 </h3>
 
 <p align="center">
@@ -23,7 +23,7 @@ Fast • Modern • No Watermark TikTok Downloader
 
 ## 📱 About
 
-AfitechTok V2 is a modern Android application designed to download TikTok content quickly and easily.
+Afitech is a modern Android application designed to download TikTok content quickly and easily.
 
 The application supports downloading:
 
@@ -86,7 +86,7 @@ Files are saved automatically into:
 
 ```text
 Download/
-└── AfitechTok/
+└── Afitech/
     ├── Videos/
     ├── Music/
     ├── Covers/
@@ -194,7 +194,7 @@ Example:
 Clone repository:
 
 ```bash
-git clone https://github.com/Afihacked/AfitechTok.git
+git clone https://github.com/Afihacked/Afitech.git
 ```
 
 Open project in Android Studio.
@@ -209,7 +209,7 @@ Build and run:
 
 ## 📋 Requirements
 
-* Android 10 (API 29) or higher
+* Android 8 (API 27) or higher
 * Internet connection
 * Storage access permission
 
