@@ -1,97 +1,95 @@
 name: Android Release
 
 on:
-push:
-branches:
-  - main
+  push:
+    branches:
+      - main
 
 permissions:
-contents: write
+  contents: write
 
 jobs:
-build-release:
-runs-on: ubuntu-latest
-  
-  ```
-steps:
-  - name: Checkout
-    uses: actions/checkout@v4
-    with:
-      fetch-depth: 0
+  build-release:
+    runs-on: ubuntu-latest
 
-  - name: Setup Java
-    uses: actions/setup-java@v4
-    with:
-      distribution: temurin
-      java-version: 17
-      cache: gradle
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-  - name: Restore Keystore
-    run: |
-      echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > app/afitech.jks
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+          cache: gradle
 
-  - name: Create Gradle Properties
-    run: |
-      echo "STORE_FILE=afitech.jks" >> gradle.properties
-      echo "STORE_PASSWORD=${{ secrets.STORE_PASSWORD }}" >> gradle.properties
-      echo "KEY_ALIAS=${{ secrets.KEY_ALIAS }}" >> gradle.properties
-      echo "KEY_PASSWORD=${{ secrets.KEY_PASSWORD }}" >> gradle.properties
+      - name: Restore Keystore
+        run: |
+          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > app/afitech.jks
 
-  - name: Grant Execute Permission
-    run: chmod +x gradlew
+      - name: Create Gradle Properties
+        run: |
+          echo "STORE_FILE=afitech.jks" >> gradle.properties
+          echo "STORE_PASSWORD=${{ secrets.STORE_PASSWORD }}" >> gradle.properties
+          echo "KEY_ALIAS=${{ secrets.KEY_ALIAS }}" >> gradle.properties
+          echo "KEY_PASSWORD=${{ secrets.KEY_PASSWORD }}" >> gradle.properties
 
-  - name: Extract Version Info
-    id: version
-    run: |
-      VERSION=$(grep 'versionName =' app/build.gradle.kts | sed 's/.*"\(.*\)".*/\1/')
-      VERSION_CODE=$(grep 'versionCode =' app/build.gradle.kts | grep -o '[0-9]\+')
+      - name: Grant Execute Permission
+        run: chmod +x gradlew
 
-      echo "version=$VERSION" >> $GITHUB_OUTPUT
-      echo "version_code=$VERSION_CODE" >> $GITHUB_OUTPUT
+      - name: Extract Version Info
+        id: version
+        run: |
+          VERSION=$(grep 'versionName =' app/build.gradle.kts | sed 's/.*"\(.*\)".*/\1/')
+          VERSION_CODE=$(grep 'versionCode =' app/build.gradle.kts | grep -o '[0-9]\+')
 
-  - name: Build Signed APK + AAB
-    run: |
-      ./gradlew assembleRelease bundleRelease
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "version_code=$VERSION_CODE" >> $GITHUB_OUTPUT
 
-  - name: Build Metadata
-    id: metadata
-    run: |
-      echo "build_date=$(date '+%Y-%m-%d %H:%M:%S UTC')" >> $GITHUB_OUTPUT
-      echo "commit_sha=${GITHUB_SHA::7}" >> $GITHUB_OUTPUT
+      - name: Build Signed APK + AAB
+        run: ./gradlew assembleRelease bundleRelease
 
-  - name: Generate Release Notes
-    run: |
-      cat > RELEASE_NOTES.md << EOF
-      ## AfiTech v${{ steps.version.outputs.version }}
+      - name: Build Metadata
+        id: metadata
+        run: |
+          echo "build_date=$(date '+%Y-%m-%d %H:%M:%S UTC')" >> $GITHUB_OUTPUT
+          echo "commit_sha=${GITHUB_SHA::7}" >> $GITHUB_OUTPUT
 
-      ### Build Information
-      - Version Name: ${{ steps.version.outputs.version }}
-      - Version Code: ${{ steps.version.outputs.version_code }}
-      - Build Date: ${{ steps.metadata.outputs.build_date }}
-      - Commit: ${{ steps.metadata.outputs.commit_sha }}
-      - Branch: ${GITHUB_REF_NAME}
+      - name: Generate Release Notes
+        run: |
+          cat > RELEASE_NOTES.md << EOF
+          ## AfiTech v${{ steps.version.outputs.version }}
 
-      ### Changes
-      Release generated automatically by GitHub Actions.
-      EOF
+          ### Build Information
+          - Version Name: ${{ steps.version.outputs.version }}
+          - Version Code: ${{ steps.version.outputs.version_code }}
+          - Build Date: ${{ steps.metadata.outputs.build_date }}
+          - Commit: ${{ steps.metadata.outputs.commit_sha }}
+          - Branch: ${GITHUB_REF_NAME}
 
-  - name: Check Tag Exists
-    id: tagcheck
-    run: |
-      if git ls-remote --tags origin "v${{ steps.version.outputs.version }}" | grep .; then
-        echo "exists=true" >> $GITHUB_OUTPUT
-      else
-        echo "exists=false" >> $GITHUB_OUTPUT
-      fi
+          ### Changes
+          Release generated automatically by GitHub Actions.
+          EOF
 
-  - name: Create Release
-    if: steps.tagcheck.outputs.exists == 'false'
-    uses: softprops/action-gh-release@v2
-    with:
-      tag_name: v${{ steps.version.outputs.version }}
-      name: AfiTech v${{ steps.version.outputs.version }}
-      body_path: RELEASE_NOTES.md
-      files: |
-        app/build/outputs/apk/release/*.apk
-        app/build/outputs/bundle/release/*.aab
-      generate_release_notes: true
+      - name: Check Tag Exists
+        id: tagcheck
+        run: |
+          if git ls-remote --tags origin "v${{ steps.version.outputs.version }}" | grep .; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Create Release
+        if: steps.tagcheck.outputs.exists == 'false'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ steps.version.outputs.version }}
+          name: AfiTech v${{ steps.version.outputs.version }}
+          body_path: RELEASE_NOTES.md
+          files: |
+            app/build/outputs/apk/release/*.apk
+            app/build/outputs/bundle/release/*.aab
+          generate_release_notes: true
