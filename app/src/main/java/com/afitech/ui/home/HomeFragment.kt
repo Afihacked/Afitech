@@ -28,11 +28,10 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     private lateinit var recentAdapter:
             RecentDownloadsAdapter
     private var progressSheet:
-
             com.afitech.ui.downloads.DownloadProgressBottomSheet?
-
             = null
-
+    private var isProcessingAction = false
+    private var isDownloadInProgress = false
     private val savedHistoryIds =
         mutableSetOf<Long>()
 
@@ -112,6 +111,28 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         startClipboardMonitoring()
 
         binding.btnAnalyze.setOnClickListener {
+            if (isDownloadInProgress) {
+
+                Snackbar.make(
+                    binding.root,
+                    "Download masih berjalan",
+                    Snackbar.LENGTH_SHORT
+                ).show()
+
+                return@setOnClickListener
+            }
+
+            if (isProcessingAction) {
+
+                Snackbar.make(
+                    binding.root,
+                    "Mohon tunggu proses sebelumnya selesai",
+                    Snackbar.LENGTH_SHORT
+                ).show()
+
+                return@setOnClickListener
+            }
+
             val url =
 
                 binding.edtUrl.text
@@ -130,6 +151,8 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
                 return@setOnClickListener
             }
+
+            isProcessingAction = true
             viewModel.analyzeUrl(
                 binding.edtUrl.text.toString().trim()
             )
@@ -322,7 +345,16 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     }
 
     private fun updateAnalyzeButton() {
+        if (isDownloadInProgress) {
 
+            binding.btnAnalyze.text =
+                "Download In Progress"
+
+            binding.btnAnalyze.isEnabled =
+                false
+
+            return
+        }
         val url =
 
             binding.edtUrl.text
@@ -447,6 +479,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
                         is HomeEvent.OpenPreview -> {
 
+
                             val sheet =
 
                                 PreviewBottomSheet.newInstance(
@@ -463,9 +496,28 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
                                     event.preview.isSlide,
                                     event.preview.previewVideoUrl
+
                                 )
+                            sheet.dismissListener = {
+
+                                if (progressSheet?.isAdded != true) {
+
+                                    isProcessingAction = false
+
+                                    updateAnalyzeButton()
+                                }
+                            }
 
                             sheet.onDownloadClick = { downloadEvent ->
+
+                                isDownloadInProgress = true
+
+                                isProcessingAction = true
+
+                                binding.btnAnalyze.isEnabled = false
+
+                                binding.btnAnalyze.text =
+                                    "Download In Progress"
 
                                 if (
                                     downloadEvent.format ==
@@ -556,6 +608,41 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
                             val historyType = folder
 
+
+                            if (
+                                progressSheet == null ||
+                                progressSheet?.isAdded != true
+                            ) {
+
+                                progressSheet =
+                                    com.afitech.ui.downloads.DownloadProgressBottomSheet(
+                                        mutableListOf()
+                                    )
+
+                                progressSheet?.onSheetDestroyed = {
+
+                                    progressSheet = null
+
+                                    isProcessingAction = false
+
+                                    isDownloadInProgress = false
+
+                                    updateAnalyzeButton()
+                                }
+
+                                if (
+                                    parentFragmentManager.findFragmentByTag(
+                                        "download_progress"
+                                    ) == null
+                                ) {
+
+                                    progressSheet?.show(
+                                        parentFragmentManager,
+                                        "download_progress"
+                                    )
+                                }
+                            }
+
                             val downloadId =
 
                                 com.afitech.utils.DownloadHelper.enqueueDownload(
@@ -570,32 +657,6 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
                                     folder
                                 )
-
-                            if (
-                                progressSheet == null ||
-                                progressSheet?.isAdded != true
-                            ) {
-
-                                progressSheet =
-                                    com.afitech.ui.downloads.DownloadProgressBottomSheet(
-                                        mutableListOf()
-                                    )
-
-                                progressSheet?.onSheetDestroyed = {
-                                    progressSheet = null
-                                }
-
-                                if (
-                                    parentFragmentManager.findFragmentByTag(
-                                        "download_progress"
-                                    ) == null
-                                ) {
-                                    progressSheet?.show(
-                                        parentFragmentManager,
-                                        "download_progress"
-                                    )
-                                }
-                            }
 
                             progressSheet?.addDownload(
 
@@ -715,6 +776,12 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                                 progressSheet?.onSheetDestroyed = {
 
                                     progressSheet = null
+
+                                    isProcessingAction = false
+
+                                    isDownloadInProgress = false
+
+                                    updateAnalyzeButton()
                                 }
                                 if (
                                     parentFragmentManager.findFragmentByTag(

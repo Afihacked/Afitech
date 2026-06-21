@@ -33,7 +33,7 @@
                     android:layout_width="62dp"
                     android:layout_height="62dp"
                     android:layout_gravity="center"
-                    android:alpha="0.85"
+                    android:alpha="0.90"
                     android:background="@drawable/bg_play_overlay"
                     android:padding="14dp"
                     android:src="@drawable/ic_play"
@@ -56,17 +56,54 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
+            android:ellipsize="end"
+            android:maxLines="3"
+    android:longClickable="true"
             android:text="Video Title"
             android:textSize="18sp"
             android:textStyle="bold"/>
 
         <TextView
+            android:id="@+id/txtReadMore"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:paddingBottom="4dp"
+            android:textColor="?attr/colorPrimary"
+            android:clickable="true"
+            android:focusable="true"
+            android:text="Read More"
+            android:textStyle="bold"
+            android:visibility="gone"/>
+
+        <com.google.android.material.chip.Chip
             android:id="@+id/txtMeta"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
-            android:text="@username • 00:00"/>
+            android:layout_marginTop="8dp"
+            android:text="@afihacked • 01:25"
+            android:clickable="true"
+            android:focusable="true"
+            app:chipIcon="@drawable/ic_person"
+            app:chipIconVisible="true"
+            android:textColor="?attr/colorPrimary"
+            app:chipBackgroundColor="@android:color/transparent"
+            app:chipStrokeColor="?attr/colorPrimary"
+            app:chipIconTint="?attr/colorPrimary"
+            app:chipStrokeWidth="1dp"/>
+        <TextView
+            android:id="@+id/txtOpenInTiktok"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:text="Open Video in TikTok"
+            android:textColor="?attr/colorPrimary"
+            android:drawableEnd="@drawable/ic_open_in_new"
 
+            android:drawablePadding="6dp"
+            android:textStyle="bold"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
