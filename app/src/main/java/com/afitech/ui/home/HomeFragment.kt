@@ -15,21 +15,13 @@ import com.afitech.R
 import com.afitech.data.model.HomeUiState
 import com.afitech.databinding.FragmentHomeBinding
 import com.afitech.ui.downloads.DownloadItem
-import com.afitech.ui.downloads.DownloadProgressBottomSheet
-import com.afitech.ui.slides.SlidePickerBottomSheet
-import com.afitech.utils.ClipboardHelper
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
-import com.afitech.utils.DownloadHelper
-import com.afitech.utils.DownloadTracker
 import com.afitech.data.repository.HistoryRepository
-import com.afitech.ui.downloads.DownloadDetailBottomSheet
-import com.afitech.ui.settings.AutoAnalyzePreferences
-import com.afitech.utils.TikTokUrlHelper
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.coroutines.Dispatchers
 
-class HomeFragment : androidx.fragment.app.Fragment(R.layout.fragment_home) {
+class HomeFragment : Fragment(R.layout.fragment_home) {
 
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
