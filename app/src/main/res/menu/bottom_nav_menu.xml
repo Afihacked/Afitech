@@ -8,6 +8,11 @@
         android:title="Home"/>
 
     <item
+        android:id="@+id/statusFragment"
+        android:icon="@drawable/ic_whatsapp"
+        android:title="Status" />
+
+    <item
         android:id="@+id/downloadsFragment"
         android:icon="@drawable/ic_download"
         android:title="Downloads"/>

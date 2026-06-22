@@ -125,12 +125,15 @@ android {
         implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.9.1")
         implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.9.1")
         implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.2")
-//    implementation("io.coil-kt.coil3:coil:3.3.0")
         implementation("com.github.bumptech.glide:glide:4.16.0")
         implementation(
             "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
         )
         implementation("androidx.media3:media3-exoplayer:1.8.0")
         implementation("androidx.media3:media3-ui:1.8.0")
+        implementation("io.coil-kt:coil:2.7.0")
     }
+}
+dependencies {
+    implementation(libs.androidx.documentfile)
 }

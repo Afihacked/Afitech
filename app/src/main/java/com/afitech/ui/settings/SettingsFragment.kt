@@ -6,8 +6,10 @@ import androidx.fragment.app.Fragment
 import com.afitech.R
 import com.afitech.databinding.FragmentSettingsBinding
 import com.afitech.BuildConfig
+
+
 class SettingsFragment :
-    androidx.fragment.app.Fragment(R.layout.fragment_settings) {
+    Fragment(R.layout.fragment_settings) {
 
     private var _binding:
             FragmentSettingsBinding? = null

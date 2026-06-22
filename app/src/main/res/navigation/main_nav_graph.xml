@@ -12,6 +12,11 @@
         android:label="Home"/>
 
     <fragment
+        android:id="@+id/statusFragment"
+        android:name="com.afitech.ui.status.StatusFragment"
+        android:label="Status" />
+
+    <fragment
         android:id="@+id/downloadsFragment"
         android:name="com.afitech.ui.downloads.DownloadsFragment"
         android:label="Downloads"/>

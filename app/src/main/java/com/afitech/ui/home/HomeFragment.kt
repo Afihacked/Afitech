@@ -18,6 +18,9 @@ import com.afitech.ui.downloads.DownloadItem
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
 import com.afitech.data.repository.HistoryRepository
+import com.afitech.ui.settings.AutoAnalyzePreferences
+import com.afitech.utils.ClipboardHelper
+import com.afitech.utils.TikTokUrlHelper
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.coroutines.Dispatchers
 
@@ -42,6 +45,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
     private var lastOfferedClipboard: String? = null
 
+    private var lastClipboardCheck = ""
     private var clipboardListener:
             ClipboardManager.OnPrimaryClipChangedListener? = null
     override fun onViewCreated(
@@ -100,7 +104,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         observeState()
         binding.root.post {
 
-            checkClipboard()
+            forceClipboardCheck()
         }
         binding.root.post {
 
@@ -109,7 +113,6 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         observeEvents()
         observeDownloadEvents()
         startClipboardMonitoring()
-
         binding.btnAnalyze.setOnClickListener {
             if (isDownloadInProgress) {
 
@@ -141,7 +144,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                     .orEmpty()
 
             if (
-                !com.afitech.utils.TikTokUrlHelper.isValidTikTokUrl(
+                !TikTokUrlHelper.isValidTikTokUrl(
                     url
                 )
             ) {
@@ -203,7 +206,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
             val valid =
 
-                com.afitech.utils.TikTokUrlHelper.isValidTikTokUrl(
+                TikTokUrlHelper.isValidTikTokUrl(
                     url
                 )
 
@@ -252,13 +255,13 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
         val clipboardText =
 
-            com.afitech.utils.ClipboardHelper.getClipboardText(
+            ClipboardHelper.getClipboardText(
                 requireContext()
             ) ?: return
 
         val extractedUrl =
 
-            com.afitech.utils.TikTokUrlHelper.extractTikTokUrl(
+            TikTokUrlHelper.extractTikTokUrl(
                 clipboardText
             ) ?: return
 
@@ -297,18 +300,24 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
         val clipboardText =
 
-            com.afitech.utils.ClipboardHelper.getClipboardText(
+            ClipboardHelper.getClipboardText(
                 requireContext()
             ) ?: return
 
         val extractedUrl =
 
-            com.afitech.utils.TikTokUrlHelper.extractTikTokUrl(
+            TikTokUrlHelper.extractTikTokUrl(
                 clipboardText
             ) ?: return
         if (
+            AutoAnalyzePreferences
+                .isBackgroundAnalyzeEnabled(
+                    requireContext()
+                )
 
-            !com.afitech.ui.settings.AutoAnalyzePreferences
+        )if (
+
+            !AutoAnalyzePreferences
                 .isAutoPasteEnabled(
                     requireContext()
                 )
@@ -327,7 +336,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         )
         if (
 
-            com.afitech.ui.settings.AutoAnalyzePreferences
+            AutoAnalyzePreferences
                 .isEnabled(
                     requireContext()
                 )
@@ -373,7 +382,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                     false
             }
 
-            !com.afitech.utils.TikTokUrlHelper.isValidTikTokUrl(
+            !TikTokUrlHelper.isValidTikTokUrl(
                 url
             ) -> {
 
@@ -529,7 +538,6 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                                     )
 
                                 } else {
-
                                     viewModel.startDownload(
                                         downloadEvent.url,
                                         downloadEvent.format
@@ -956,13 +964,13 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
         val clipboardText =
 
-            com.afitech.utils.ClipboardHelper.getClipboardText(
+            ClipboardHelper.getClipboardText(
                 requireContext()
             ).orEmpty()
 
         val autoPasteEnabled =
 
-            com.afitech.ui.settings.AutoAnalyzePreferences
+            AutoAnalyzePreferences
                 .isAutoPasteEnabled(
                     requireContext()
                 )
@@ -984,7 +992,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
                 val clipboardUrl =
 
-                    com.afitech.utils.TikTokUrlHelper.extractTikTokUrl(
+                    TikTokUrlHelper.extractTikTokUrl(
                         clipboardText
                     )
 
@@ -1023,7 +1031,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
                 val valid =
 
-                    com.afitech.utils.TikTokUrlHelper.isValidTikTokUrl(
+                    TikTokUrlHelper.isValidTikTokUrl(
                         currentUrl
                     )
 
@@ -1063,10 +1071,49 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
             }
         }
     }
+
+    private fun forceClipboardCheck() {
+
+        val clipboardText =
+
+            ClipboardHelper.getClipboardText(
+                requireContext()
+            ) ?: return
+
+        val extractedUrl =
+
+            TikTokUrlHelper.extractTikTokUrl(
+                clipboardText
+            ) ?: return
+
+        if (extractedUrl == lastClipboardCheck) {
+            return
+        }
+
+        lastClipboardCheck = extractedUrl
+
+        binding.edtUrl.setText(extractedUrl)
+
+        if (
+            AutoAnalyzePreferences.isEnabled(
+                requireContext()
+            )
+        ) { viewModel.analyzeUrl(
+                extractedUrl
+            )
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+
+        forceClipboardCheck()
+    }
+
     override fun onResume() {
         super.onResume()
 
-        checkClipboard()
+        forceClipboardCheck()
         updateHeroCard()
     }
         override fun onDestroyView() {

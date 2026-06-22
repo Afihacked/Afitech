@@ -19,6 +19,8 @@ object AutoAnalyzePreferences {
     private const val KEY_DOWNLOAD_NOTIFICATION =
         "download_notification"
 
+    private const val KEY_BACKGROUND_ANALYZE =
+        "background_analyze"
     fun isEnabled(
         context: Context
     ): Boolean {
@@ -150,4 +152,20 @@ object AutoAnalyzePreferences {
             )
             .apply()
     }
+
+    fun isBackgroundAnalyzeEnabled(
+        context: Context
+    ): Boolean {
+
+        return context
+            .getSharedPreferences(
+                PREF_NAME,
+                Context.MODE_PRIVATE
+            )
+            .getBoolean(
+                KEY_BACKGROUND_ANALYZE,
+                false
+            )
+    }
+
 }

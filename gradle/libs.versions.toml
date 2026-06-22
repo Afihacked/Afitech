@@ -11,6 +11,7 @@ activity = "1.13.0"
 constraintlayout = "2.2.1"
 room = "2.7.2"
 ksp = "2.0.21-1.0.28"
+documentfile = "1.1.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -24,6 +25,7 @@ androidx-constraintlayout = { group = "androidx.constraintlayout", name = "const
 room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
 room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }
 room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
+androidx-documentfile = { group = "androidx.documentfile", name = "documentfile", version.ref = "documentfile" }
 
 
 [plugins]

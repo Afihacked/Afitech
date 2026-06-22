@@ -287,6 +287,20 @@ class DownloadsFragment :
                 "Covers"
             )
         }
+        binding.chipStatusVideo.setOnClickListener {
+
+            viewModel.filterByType(
+                "Status Video"
+            )
+        }
+
+        binding.chipStatusImage.setOnClickListener {
+
+            viewModel.filterByType(
+                "Status Image"
+            )
+        }
+
         binding.swipeRefresh.setOnRefreshListener {
 
             viewModel.loadHistory(
@@ -494,13 +508,38 @@ class DownloadsFragment :
                 )
             }
 
+        val statusVideos =
+
+            history.count {
+
+                it.fileType.equals(
+                    "Status Video",
+                    true
+                )
+            }
+
+        val statusImages =
+
+            history.count {
+
+                it.fileType.equals(
+                    "Status Image",
+                    true
+                )
+            }
+
         binding.txtTotalFiles.text =
 
             "Total Files: ${history.size}"
 
         binding.txtStats.text =
 
-            "Videos $videos • Music $music • Slides $slides • Covers $covers"
+            "Videos $videos • " +
+                    "Music $music • " +
+                    "Slides $slides • " +
+                    "Covers $covers • " +
+                    "Status Video $statusVideos • " +
+                    "Status Image $statusImages"
 
         var totalBytes = 0L
 

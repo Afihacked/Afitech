@@ -6,6 +6,9 @@
     <uses-permission
         android:name="android.permission.POST_NOTIFICATIONS"/>
 
+    <uses-permission
+        android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32"/>
 
     <application
         android:allowBackup="true"
@@ -26,6 +29,11 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".ui.status.ImagePreviewActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Material3.DayNight.NoActionBar"/>
+
+        <activity
             android:name=".ui.player.VideoPreviewActivity"
             android:screenOrientation="portrait"/>
         <provider
@@ -38,6 +46,10 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/provider_paths"/>
         </provider>
+
+        <service
+            android:name=".service.ClipboardAnalyzeService"
+            android:exported="false" />
     </application>
 
 </manifest>

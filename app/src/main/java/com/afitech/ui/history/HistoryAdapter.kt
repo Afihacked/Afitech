@@ -80,22 +80,36 @@ class HistoryAdapter(
                 "covers" ->
                     R.drawable.ic_covers
 
+                "status video" ->
+                    R.drawable.ic_videos
+
+                "status image" ->
+                    R.drawable.ic_image
                 else ->
                     R.drawable.ic_file_save
             }
 
             val file = File(item.filePath)
 
+            val showThumbnail =
+
+                item.fileType.equals("Videos", true)
+                        ||
+                        item.fileType.equals("Slides", true)
+                        ||
+                        item.fileType.equals("Covers", true)
+                        ||
+                        item.fileType.equals("Status Video", true)
+                        ||
+                        item.fileType.equals("Status Image", true)
+
             if (
                 file.exists() &&
-                (
-                        item.fileType.equals("Videos", true)
-                                ||
-                                item.fileType.equals("Slides", true)
-                                ||
-                                item.fileType.equals("Covers", true)
-                        )
+                showThumbnail
             ) {
+
+                binding.imgType.scaleType =
+                    ImageView.ScaleType.CENTER_CROP
 
                 binding.imgType.setPadding(
                     0,
@@ -104,7 +118,8 @@ class HistoryAdapter(
                     0
                 )
 
-                binding.imgType.imageTintList = null
+                binding.imgType.imageTintList =
+                    null
 
                 Glide.with(binding.root)
                     .load(file)
@@ -135,32 +150,8 @@ class HistoryAdapter(
                             binding.root,
 
                             com.google.android.material.R.attr.colorOnSurface
-
                         )
                     )
-            }
-
-            if (
-                file.exists() &&
-                (
-                        item.fileType.equals("Videos", true)
-                                ||
-                                item.fileType.equals("Slides", true)
-                                ||
-                                item.fileType.equals("Covers", true)
-                        )
-            ) {
-
-                Glide.with(binding.root)
-                    .load(file)
-                    .centerCrop()
-                    .into(binding.imgType)
-
-            } else {
-
-                binding.imgType.setImageResource(
-                    iconRes
-                )
             }
 
             val selected =
