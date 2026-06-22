@@ -9,7 +9,7 @@ Afitech
 </h3>
 
 <p align="center">
-Fast • Modern • No Watermark TikTok Downloader
+TikTok Downloader • WhatsApp Status Saver • Modern Android Utility
 </p>
 
 <p align="center">
@@ -23,60 +23,91 @@ Fast • Modern • No Watermark TikTok Downloader
 
 ## 📱 About
 
-Afitech is a modern Android application designed to download TikTok content quickly and easily.
+Afitech is a modern Android application that combines a powerful TikTok Downloader and WhatsApp Status Saver in a single lightweight experience.
 
-The application supports downloading:
-
-* 🎥 HD Videos
-* 🎵 Music / Audio
-* 🖼 Cover Images
-* 📸 Slide Photos
-
-Built with modern Android development practices using Kotlin, MVVM Architecture, Material 3 Design, Room Database, and DownloadManager.
+The app is designed with modern Android development practices using Kotlin, MVVM Architecture, Material Design 3, Room Database, Media3 ExoPlayer, and Android Storage APIs.
 
 ---
 
 ## ✨ Features
 
-### TikTok Downloader
+### 🎵 TikTok Downloader
 
 * Download TikTok videos without watermark
-* Download original audio/music
+* Download original music/audio
 * Download cover images
 * Download slide/photo posts
 * Smart URL analysis
 * Automatic short-link resolution
+* Built-in media preview
 
-### Smart Clipboard
+---
+
+### 💬 WhatsApp Status Saver
+
+* Browse WhatsApp Status directly from `.Statuses`
+* Supports Android 8 to latest Android versions
+* Android 11+ SAF (Storage Access Framework) support
+* Image Status Preview
+* Video Status Preview
+* Save Status to device
+* Share Status directly
+* Saved status detection
+* Video duration display
+* Image and Video filters
+
+---
+
+### 📋 Smart Clipboard
 
 * Auto Paste TikTok URL
 * Auto Analyze Clipboard
 * Clipboard monitoring
 * Link detection status
 
-### Download Manager
+---
+
+### 📥 Download Manager
 
 * Download progress tracking
 * Multiple simultaneous downloads
 * Download history
 * File sharing
 * File preview
-* Swipe-to-delete support
+* Search downloads
 * Multi-selection actions
+* Swipe-to-delete support
+* Download statistics
 
-### Video Preview
+---
 
-* Built-in ExoPlayer video preview
+### 🎬 Media Preview
+
+#### Video Preview
+
+* Built-in Media3 ExoPlayer
 * Fullscreen playback
-* Direct playback from downloaded files
+* Direct playback from local files
+* TikTok and WhatsApp video support
 
-### Modern UI
+#### Image Preview
+
+* Fullscreen image viewer
+* Save image
+* Share image
+* Saved state detection
+
+---
+
+### 🎨 Modern UI
 
 * Material Design 3
-* Dynamic theme support
+* Dynamic Theme Support
+* Light & Dark Mode
 * Smooth animations
+* Modern Bottom Sheets
 * Responsive layouts
-* Bottom Sheet interactions
+* Optimized RecyclerView performance
 
 ---
 
@@ -90,7 +121,9 @@ Download/
     ├── Videos/
     ├── Music/
     ├── Covers/
-    └── Slides/
+    ├── Slides/
+    ├── Status Images/
+    └── Status Videos/
 ```
 
 ---
@@ -102,11 +135,12 @@ Download/
 * Material Design 3
 * MVVM Architecture
 * Room Database
-* Coroutines
-* Flow
+* Kotlin Coroutines
+* Kotlin Flow
 * Glide
 * Media3 ExoPlayer
-* DownloadManager
+* Android DownloadManager
+* Storage Access Framework (SAF)
 
 ---
 
@@ -117,22 +151,25 @@ UI Layer
 │
 ├── Fragments
 ├── Activities
-├── BottomSheets
+├── Bottom Sheets
 │
 ViewModel Layer
 │
 ├── HomeViewModel
 ├── DownloadsViewModel
+├── StatusViewModel
 │
 Repository Layer
 │
 ├── TikTokRepository
 ├── HistoryRepository
+├── WhatsappStatusRepository
 │
 Data Layer
 │
 ├── Room Database
 ├── TikWM API
+├── Storage Access Framework
 └── Preferences
 ```
 
@@ -147,6 +184,15 @@ Data Layer
 * Download options
 * Recent downloads
 
+### WhatsApp Status
+
+* WhatsApp folder connection
+* Browse available statuses
+* Video and image filters
+* Preview status
+* Save status
+* Share status
+
 ### Downloads
 
 * Download history
@@ -155,6 +201,7 @@ Data Layer
 * Statistics
 * Share files
 * Delete files
+* Multi-selection actions
 
 ### Settings
 
@@ -172,8 +219,6 @@ Data Layer
   <img src="assets/screenshots/downloads.png" width="220"/>
   <img src="assets/screenshots/settings.png" width="220"/>
 </p>
-
-```
 
 ---
 
@@ -198,8 +243,9 @@ Build and run:
 ## 📋 Requirements
 
 * Android 8 (API 27) or higher
-* Internet connection
-* Storage access permission
+* Internet connection (TikTok Downloader)
+* Storage permission (Android 8–10)
+* SAF Folder Access (Android 11+ WhatsApp Status)
 
 ---
 
@@ -207,7 +253,7 @@ Build and run:
 
 This application is intended for personal use only.
 
-Users are responsible for complying with TikTok's Terms of Service and applicable copyright laws.
+Users are responsible for complying with TikTok's Terms of Service, WhatsApp policies, and applicable copyright laws.
 
 ---
 
@@ -216,6 +262,7 @@ Users are responsible for complying with TikTok's Terms of Service and applicabl
 **Afi Tech**
 
 GitHub:
+
 https://github.com/Afihacked
 
 ---
