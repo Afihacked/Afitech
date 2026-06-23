@@ -84,10 +84,6 @@ class HistoryRepository(
         dao.deleteMany(ids)
     }
 
-    suspend fun getRecent() =
-
-        dao.getRecent()
-
     fun observeRecent() =
 
         dao.observeRecent()

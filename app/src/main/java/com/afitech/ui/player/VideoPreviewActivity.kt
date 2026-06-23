@@ -1,6 +1,5 @@
 package com.afitech.ui.player
 
-import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
@@ -11,14 +10,9 @@ import androidx.media3.common.MediaItem
 import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
-import com.afitech.data.repository.HistoryRepository
 import com.afitech.databinding.ActivityVideoPreviewBinding
-import com.afitech.utils.StatusFileChecker
-import com.afitech.utils.StatusSaveHelper
 import com.google.android.material.snackbar.Snackbar
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+
 
 class VideoPreviewActivity : AppCompatActivity() {
 
@@ -251,118 +245,6 @@ class VideoPreviewActivity : AppCompatActivity() {
 
         }, 10000)
 
-        binding.btnClose.setOnClickListener {
-
-            finish()
-        }
-
-        binding.btnShare.setOnClickListener {
-
-            shareVideo()
-        }
-
-        binding.btnSave.setOnClickListener {
-
-            saveVideo()
-        }
-
-        updateSavedState()
-
-    }
-    private fun updateSavedState() {
-
-        val saved =
-
-            StatusFileChecker.isSaved(
-                fileName
-            )
-
-        binding.btnSave.text =
-
-            if (saved)
-                "Saved ✓"
-            else
-                "Save"
-
-        binding.btnSave.isEnabled =
-            !saved
-    }
-
-    private fun shareVideo() {
-
-        val intent =
-            Intent(Intent.ACTION_SEND)
-
-        intent.type = "video/*"
-
-        intent.putExtra(
-            Intent.EXTRA_STREAM,
-            videoUri
-        )
-
-        intent.addFlags(
-            Intent.FLAG_GRANT_READ_URI_PERMISSION
-        )
-
-        startActivity(
-            Intent.createChooser(
-                intent,
-                "Share Video"
-            )
-        )
-    }
-
-    private fun saveVideo() {
-
-        CoroutineScope(
-            Dispatchers.IO
-        ).launch {
-
-            try {
-
-                val path =
-
-                    StatusSaveHelper.saveStatus(
-
-                        this@VideoPreviewActivity,
-
-                        videoUri,
-
-                        fileName
-                    )
-
-                HistoryRepository(
-                    this@VideoPreviewActivity
-                ).saveHistory(
-
-                    fileName = fileName,
-
-                    fileType = "Status Video",
-
-                    filePath = path
-                )
-
-                runOnUiThread {
-
-                    showMessage(
-                        "Saved successfully"
-                    )
-
-                    updateSavedState()
-                }
-
-            } catch (e: Exception) {
-
-                runOnUiThread {
-
-                    showMessage(
-
-                        e.message
-                            ?: "Save failed"
-                    )
-                }
-            }
-        }
     }
     private fun showMessage(
         message: String

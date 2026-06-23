@@ -11,120 +11,80 @@
         android:id="@+id/txtTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="20dp"
         android:text="WhatsApp Status"
         android:textSize="28sp"
-        android:textStyle="bold"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="20dp"/>
+        android:textStyle="bold"/>
 
     <TextView
+        android:id="@+id/txtStatusInfo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Browse WhatsApp statuses"
         android:layout_marginStart="20dp"
-        android:alpha="0.7"/>
+        android:layout_marginTop="4dp"
+        android:alpha="0.7"
+        android:text="0 Status • 0 Videos • 0 Images"
+        android:textSize="13sp"/>
 
-    <com.google.android.material.card.MaterialCardView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="20dp"
-        app:cardElevation="0dp"
-        app:cardBackgroundColor="?attr/colorPrimaryContainer">
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="20dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
 
-        <LinearLayout
-            android:layout_width="match_parent"
+        <com.google.android.material.chip.Chip
+            android:id="@+id/txtFolderStatus"
+            style="@style/Widget.Material3.Chip.Assist"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="20dp">
+            android:text="Not Connected"
+            android:checkable="false"/>
 
-            <TextView
-                android:id="@+id/txtStatusCount"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Available Statuses: 0"
-                android:textStyle="bold"
-                android:textSize="18sp"/>
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_weight="1"/>
 
-            <TextView
-                android:id="@+id/txtStatusInfo"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Videos 0 • Images 0"
-                android:layout_marginTop="8dp"/>
-
-        </LinearLayout>
-    </com.google.android.material.card.MaterialCardView>
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/cardFolderAccess"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="20dp"
-        android:layout_marginBottom="16dp">
-
-        <LinearLayout
-            android:layout_width="match_parent"
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnSelectFolder"
+            style="@style/Widget.Material3.Button.TextButton"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="16dp"
-            android:orientation="horizontal"
-            android:gravity="center_vertical">
+            android:text="Connect"/>
+    </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="WhatsApp Folder"/>
-
-                <TextView
-                    android:id="@+id/txtFolderStatus"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Not Connected"
-                    android:textSize="12sp"/>
-
-            </LinearLayout>
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnSelectFolder"
-                style="@style/Widget.Material3.Button.OutlinedButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Select"/>
-
-        </LinearLayout>
-
-    </com.google.android.material.card.MaterialCardView>
     <com.google.android.material.chip.ChipGroup
         android:id="@+id/chipGroup"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingHorizontal="16dp"
+        android:layout_marginTop="4dp"
+        android:paddingHorizontal="12dp"
         app:singleSelection="true">
 
         <com.google.android.material.chip.Chip
             android:id="@+id/chipAll"
+            style="@style/Widget.Material3.Chip.Filter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            style="@style/Widget.Material3.Chip.Filter"
-            android:text="All"
-            android:checked="true"/>
+            android:checked="true"
+            android:text="All"/>
 
         <com.google.android.material.chip.Chip
             android:id="@+id/chipVideos"
+            style="@style/Widget.Material3.Chip.Filter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            style="@style/Widget.Material3.Chip.Filter"
             android:text="Videos"/>
 
         <com.google.android.material.chip.Chip
             android:id="@+id/chipImages"
+            style="@style/Widget.Material3.Chip.Filter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            style="@style/Widget.Material3.Chip.Filter"
             android:text="Images"/>
 
     </com.google.android.material.chip.ChipGroup>
@@ -142,35 +102,116 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvStatuses"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
+                android:layout_height="match_parent"
+                android:clipToPadding="false"
+                android:paddingStart="4dp"
+                android:paddingTop="4dp"
+                android:paddingEnd="4dp"
+                android:paddingBottom="12dp"/>
 
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+        <LinearLayout
+            android:id="@+id/layoutSkeleton"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="6dp"
+            android:visibility="gone">
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="160dp"
+                android:orientation="horizontal">
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:layout_margin="4dp"
+                    android:background="?attr/colorSurfaceContainer"/>
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:layout_margin="4dp"
+                    android:background="?attr/colorSurfaceContainer"/>
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:layout_margin="4dp"
+                    android:background="?attr/colorSurfaceContainer"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="160dp"
+                android:orientation="horizontal">
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:layout_margin="4dp"
+                    android:background="?attr/colorSurfaceContainer"/>
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:layout_margin="4dp"
+                    android:background="?attr/colorSurfaceContainer"/>
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:layout_margin="4dp"
+                    android:background="?attr/colorSurfaceContainer"/>
+            </LinearLayout>
+
+        </LinearLayout>
         <LinearLayout
             android:id="@+id/layoutEmpty"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:padding="24dp"
+            android:visibility="gone">
 
             <ImageView
-                android:layout_width="120dp"
-                android:layout_height="120dp"
+                android:id="@+id/imgEmpty"
+                android:layout_width="96dp"
+                android:layout_height="96dp"
+                android:alpha="0.7"
                 android:src="@drawable/ic_folder_open"
                 app:tint="?attr/colorOutline"/>
 
             <TextView
+                android:id="@+id/txtEmptyTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="No Status Found"
-                android:textSize="22sp"
+                android:layout_marginTop="12dp"
+                android:textSize="20sp"
                 android:textStyle="bold"/>
 
             <TextView
+                android:id="@+id/txtEmptyDesc"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Connect WhatsApp folder first"
+                android:layout_marginTop="4dp"
+                android:gravity="center"
                 android:alpha="0.7"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnEmptyAction"
+                style="@style/Widget.Material3.Button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"/>
 
         </LinearLayout>
 

@@ -141,8 +141,7 @@ class StatusViewModel(
 
                 historyRepository.saveHistory(
 
-                    fileName =
-                        status.name,
+                    fileName = status.name,
 
                     fileType =
 
@@ -156,6 +155,8 @@ class StatusViewModel(
 
                     filePath = path
                 )
+
+                status.isSaved = true
 
                 cachedStatuses = null
 

@@ -5,13 +5,15 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import coil.load
+import com.afitech.R
 import com.afitech.data.model.WhatsappStatus
 import com.afitech.databinding.ItemStatusBinding
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 
 class StatusAdapter(
-    private val onClick: (WhatsappStatus) -> Unit
+    private val onClick: (WhatsappStatus) -> Unit,
+    private val onDownload: (WhatsappStatus) -> Unit
 ) : ListAdapter<
         WhatsappStatus,
         StatusAdapter.ViewHolder
@@ -30,36 +32,71 @@ class StatusAdapter(
         ) {
 
             Glide.with(binding.root)
-
                 .load(item.uri)
-
+                .thumbnail(0.25f)
                 .centerCrop()
-
+                .transition(
+                    DrawableTransitionOptions.withCrossFade(180)
+                )
                 .into(binding.imgThumbnail)
 
-            binding.imgVideo.visibility =
+            if (item.isVideo) {
 
-                if (item.isVideo)
+                binding.imgVideo.visibility =
                     View.VISIBLE
-                else
+
+                binding.txtDuration.visibility =
+                    View.VISIBLE
+
+                binding.txtDuration.text =
+                    formatDuration(
+                        item.duration
+                    )
+
+            } else {
+
+                binding.imgVideo.visibility =
                     View.GONE
 
-            binding.txtDuration.visibility =
-
-                if (item.isVideo)
-                    View.VISIBLE
-                else
+                binding.txtDuration.visibility =
                     View.GONE
-
-            binding.txtDuration.text =
-
-                formatDuration(
-                    item.duration
-                )
+            }
 
             binding.root.setOnClickListener {
 
                 onClick(item)
+            }
+
+            if (item.isSaved) {
+
+                binding.imgDownload.setImageResource(
+                    R.drawable.ic_check_circle
+                )
+
+                binding.imgDownload.isEnabled = false
+
+                binding.imgDownload.alpha = 1f
+
+            } else {
+
+                binding.imgDownload.setImageResource(
+                    R.drawable.ic_download
+                )
+
+                binding.imgDownload.isEnabled = true
+
+                binding.imgDownload.alpha = 1f
+
+                binding.imgDownload.setOnClickListener {
+
+                    onDownload(item)
+
+                    item.isSaved = true
+
+                    notifyItemChanged(
+                        bindingAdapterPosition
+                    )
+                }
             }
         }
     }
@@ -90,15 +127,11 @@ class StatusAdapter(
     ): ViewHolder {
 
         return ViewHolder(
-
             ItemStatusBinding.inflate(
-
                 LayoutInflater.from(
                     parent.context
                 ),
-
                 parent,
-
                 false
             )
         )

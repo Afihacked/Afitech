@@ -24,7 +24,7 @@ class RecentDownloadsAdapter(
 ) : ListAdapter<
         DownloadHistoryEntity,
         RecentDownloadsAdapter.ViewHolder
-        >(com.afitech.ui.history.HistoryDiffCallback) {
+        >(HistoryDiffCallback) {
 
     inner class ViewHolder(
 
@@ -70,6 +70,12 @@ class RecentDownloadsAdapter(
                 "covers" ->
                     R.drawable.ic_covers
 
+                "status video" ->
+                    R.drawable.ic_videos
+
+                "status image" ->
+                    R.drawable.ic_slides
+
                 else ->
                     R.drawable.ic_file_save
             }
@@ -77,16 +83,32 @@ class RecentDownloadsAdapter(
             val file =
                 File(item.filePath)
 
+            val showThumbnail =
+
+                item.fileType.equals("Videos", true)
+                        ||
+                        item.fileType.equals("Slides", true)
+                        ||
+                        item.fileType.equals("Covers", true)
+                        ||
+                        item.fileType.equals("Status Video", true)
+                        ||
+                        item.fileType.equals("Status Image", true)
+
             if (
                 file.exists() &&
-                (
-                        item.fileType.equals("Videos", true)
-                                ||
-                                item.fileType.equals("Slides", true)
-                                ||
-                                item.fileType.equals("Covers", true)
-                        )
+                showThumbnail
             ) {
+
+                binding.imgType.scaleType =
+                    ImageView.ScaleType.CENTER_CROP
+
+                binding.imgType.setPadding(
+                    0,
+                    0,
+                    0,
+                    0
+                )
 
                 binding.imgType.imageTintList =
                     null
@@ -107,22 +129,6 @@ class RecentDownloadsAdapter(
                     20,
                     20
                 )
-
-                binding.imgType.setImageResource(
-                    iconRes
-                )
-
-                binding.imgType.imageTintList =
-                    ColorStateList.valueOf(
-
-                        MaterialColors.getColor(
-
-                            binding.root,
-
-                            com.google.android.material.R.attr.colorOnSurface
-
-                        )
-                    )
             }
 
             binding.imgArrow.visibility =

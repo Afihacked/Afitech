@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <com.google.android.material.card.MaterialCardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="180dp"
+    android:layout_height="160dp"
     android:layout_margin="4dp"
-    app:cardCornerRadius="18dp"
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="?attr/selectableItemBackgroundBorderless"
+    app:cardCornerRadius="20dp"
     app:cardElevation="0dp">
 
     <FrameLayout
@@ -20,13 +22,22 @@
             android:scaleType="centerCrop"/>
 
         <ImageView
-            android:id="@+id/imgVideo"
-            android:layout_width="28dp"
-            android:layout_height="28dp"
+            android:id="@+id/imgDownload"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:padding="10dp"
             android:layout_gravity="top|end"
             android:layout_margin="8dp"
-            android:background="?attr/colorSurfaceContainer"
-            android:padding="4dp"
+            android:background="@drawable/bg_status_action"
+            android:src="@drawable/ic_download"/>
+
+        <ImageView
+            android:id="@+id/imgVideo"
+            android:layout_width="38dp"
+            android:layout_height="38dp"
+            android:layout_gravity="center"
+            android:background="@drawable/bg_status_play"
+            android:padding="12dp"
             android:src="@drawable/ic_play"
             android:visibility="gone"/>
 
@@ -35,11 +46,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|end"
-            android:layout_margin="8dp"
-            android:background="?attr/colorSurfaceContainer"
-            android:paddingHorizontal="8dp"
-            android:paddingVertical="4dp"
+            android:layout_margin="10dp"
             android:text="00:00"
+            android:textColor="@android:color/white"
             android:textSize="11sp"
             android:textStyle="bold"
             android:visibility="gone"/>

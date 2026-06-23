@@ -14,6 +14,7 @@ import com.afitech.R
 import com.afitech.data.model.WhatsappStatus
 import com.afitech.databinding.FragmentStatusBinding
 import com.afitech.ui.player.VideoPreviewActivity
+import com.afitech.utils.StatusFolderValidator
 import com.afitech.utils.StatusPreferences
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
@@ -28,16 +29,6 @@ class StatusFragment : Fragment(
     private lateinit var adapter: StatusAdapter
 
     private val viewModel: StatusViewModel by viewModels()
-
-    private val permissionLauncher =
-        registerForActivityResult(
-            ActivityResultContracts.RequestPermission()
-        ) { granted ->
-
-            if (granted) {
-                viewModel.loadStatuses()
-            }
-        }
 
     private val folderPicker =
         registerForActivityResult(
@@ -56,14 +47,105 @@ class StatusFragment : Fragment(
                                 Intent.FLAG_GRANT_WRITE_URI_PERMISSION
                     )
 
-                StatusPreferences.saveUri(
-                    requireContext(),
-                    uri
-                )
+                val result =
 
-                updateFolderStatus()
+                    StatusFolderValidator.validate(
+                        requireContext(),
+                        uri
+                    )
 
-                viewModel.loadStatuses()
+                when (result) {
+
+                    StatusFolderValidator.Result.VALID -> {
+
+                        StatusPreferences.saveUri(
+                            requireContext(),
+                            uri
+                        )
+
+                        updateFolderStatus()
+
+                        viewModel.clearCache()
+
+                        viewModel.loadStatuses(
+                            forceRefresh = true
+                        )
+                    }
+
+                    StatusFolderValidator.Result.EMPTY_STATUS_FOLDER -> {
+
+                        StatusPreferences.saveUri(
+                            requireContext(),
+                            uri
+                        )
+
+                        updateFolderStatus()
+
+                        showNoStatusState()
+                    }
+
+                    StatusFolderValidator.Result.NOT_WHATSAPP -> {
+
+                        WrongFolderBottomSheet(
+
+                            title = "Wrong Folder Selected",
+
+                            message =
+                                "Please select your WhatsApp Status folder.",
+
+                            onRetry = {
+
+                                openFolderPicker()
+                            },
+
+                            onHelp = {
+
+                                HiddenFolderHelpBottomSheet()
+                                    .show(
+                                        childFragmentManager,
+                                        "hidden_help"
+                                    )
+                            }
+
+                        ).show(
+
+                            childFragmentManager,
+
+                            "wrong_folder"
+                        )
+                    }
+
+                    StatusFolderValidator.Result.NOT_STATUSES -> {
+
+                        WrongFolderBottomSheet(
+
+                            title = "Almost There",
+
+                            message =
+                                "Open Media → .Statuses and select that folder.",
+
+                            onRetry = {
+
+                                openFolderPicker()
+                            },
+
+                            onHelp = {
+
+                                HiddenFolderHelpBottomSheet()
+                                    .show(
+                                        childFragmentManager,
+                                        "hidden_help"
+                                    )
+                            }
+
+                        ).show(
+
+                            childFragmentManager,
+
+                            "statuses_folder"
+                        )
+                    }
+                }
 
             } catch (e: Exception) {
 
@@ -74,7 +156,6 @@ class StatusFragment : Fragment(
                 ).show()
             }
         }
-
     private var allStatuses =
         emptyList<WhatsappStatus>()
 
@@ -92,10 +173,33 @@ class StatusFragment : Fragment(
         _binding = FragmentStatusBinding.bind(view)
 
         updateFolderStatus()
+        if (
+            StatusPreferences.getUri(
+                requireContext()
+            ) == null
+        ) {
+
+            showNotConnectedState()
+
+            StatusSetupBottomSheet {
+
+                openFolderPicker()
+
+            }.show(
+
+                childFragmentManager,
+
+                "setup"
+            )
+        }
 
         setupRecyclerView()
+
         binding.swipeRefresh.isEnabled = false
+
         observeEvents()
+
+        observeLoading()
 
         observeStatuses()
 
@@ -126,45 +230,40 @@ class StatusFragment : Fragment(
 
     private fun setupRecyclerView() {
 
-        adapter = StatusAdapter { status ->
+        adapter = StatusAdapter(
 
-            if (status.isVideo) {
+            onClick = { status ->
 
-                val intent = Intent(
-                    requireContext(),
-                    VideoPreviewActivity::class.java
-                )
+                if (status.isVideo) {
 
-                intent.putExtra(
-                    "video_uri",
-                    status.uri.toString()
-                )
-                intent.putExtra(
-                    "file_name",
-                    status.name
-                )
-                startActivity(intent)
+                    val intent = Intent(
+                        requireContext(),
+                        VideoPreviewActivity::class.java
+                    )
 
-            } else {
+                    intent.putExtra(
+                        "video_uri",
+                        status.uri.toString()
+                    )
 
-                val intent = Intent(
-                    requireContext(),
-                    ImagePreviewActivity::class.java
-                )
+                    intent.putExtra(
+                        "file_name",
+                        status.name
+                    )
 
-                intent.putExtra(
-                    "uri",
-                    status.uri.toString()
-                )
+                    startActivity(intent)
 
-                intent.putExtra(
-                    "name",
-                    status.name
-                )
+                } else {
 
-                startActivity(intent)
+                    openImageViewer(status)
+                }
+            },
+
+            onDownload = { status ->
+
+                viewModel.saveStatus(status)
             }
-        }
+        )
 
         binding.rvStatuses.layoutManager =
             GridLayoutManager(
@@ -196,18 +295,25 @@ class StatusFragment : Fragment(
                     allStatuses = list
 
                     applyFilter(currentFilter)
+                    val uri =
+                        StatusPreferences.getUri(
+                            requireContext()
+                        )
 
-                    binding.layoutEmpty.visibility =
-                        if (list.isEmpty())
-                            View.VISIBLE
-                        else
-                            View.GONE
+                    if (uri == null) {
 
-                    binding.rvStatuses.visibility =
-                        if (list.isEmpty())
-                            View.GONE
-                        else
-                            View.VISIBLE
+                        showNotConnectedState()
+
+                    } else if (list.isEmpty()) {
+
+                        showNoStatusState()
+
+                    } else {
+
+                        showContentState()
+
+                        applyFilter(currentFilter)
+                    }
 
                     val videos =
                         list.count {
@@ -217,11 +323,36 @@ class StatusFragment : Fragment(
                     val images =
                         list.size - videos
 
-                    binding.txtStatusCount.text =
-                        "Available Statuses: ${list.size}"
-
                     binding.txtStatusInfo.text =
-                        "Videos $videos • Images $images"
+                        "${list.size} Status • $videos Videos • $images Images"
+                }
+            }
+        }
+    }
+
+    private fun observeLoading() {
+
+        viewLifecycleOwner.lifecycleScope.launch {
+
+            viewLifecycleOwner.repeatOnLifecycle(
+                Lifecycle.State.STARTED
+            ) {
+
+                viewModel.isLoading.collect { loading ->
+
+                    binding.layoutSkeleton.visibility =
+
+                        if (loading)
+                            View.VISIBLE
+                        else
+                            View.GONE
+
+                    binding.rvStatuses.visibility =
+
+                        if (loading)
+                            View.INVISIBLE
+                        else
+                            View.VISIBLE
                 }
             }
         }
@@ -234,12 +365,27 @@ class StatusFragment : Fragment(
                 requireContext()
             )
 
+        val connected =
+
+            uri != null &&
+                    requireContext()
+                        .contentResolver
+                        .persistedUriPermissions
+                        .any { it.uri == uri }
+
         binding.txtFolderStatus.text =
 
-            if (uri == null)
-                "Not Connected"
+            if (connected)
+                "WhatsApp Connected"
             else
-                "Connected"
+                "Connect WhatsApp Folder"
+
+        binding.btnSelectFolder.visibility =
+
+            if (connected)
+                View.GONE
+            else
+                View.VISIBLE
     }
 
     private fun observeEvents() {
@@ -258,7 +404,7 @@ class StatusFragment : Fragment(
 
                             Snackbar.make(
                                 binding.root,
-                                "Saved: ${it.fileName}",
+                                "Status saved successfully",
                                 Snackbar.LENGTH_SHORT
                             ).show()
 
@@ -309,13 +455,6 @@ class StatusFragment : Fragment(
             filtered.toList()
         )
 
-        binding.layoutEmpty.visibility =
-
-            if (filtered.isEmpty())
-                View.VISIBLE
-            else
-                View.GONE
-
         binding.rvStatuses.visibility =
 
             if (filtered.isEmpty())
@@ -347,12 +486,109 @@ class StatusFragment : Fragment(
         applyFilter(currentFilter)
     }
 
+    private fun openImageViewer(
+        status: WhatsappStatus
+    ) {
+
+        val intent = Intent(
+            Intent.ACTION_VIEW
+        ).apply {
+
+            setDataAndType(
+                status.uri,
+                "image/*"
+            )
+
+            addFlags(
+                Intent.FLAG_GRANT_READ_URI_PERMISSION
+            )
+        }
+
+        startActivity(intent)
+    }
+
+    private fun showNotConnectedState() {
+
+        binding.layoutEmpty.visibility = View.VISIBLE
+        binding.rvStatuses.visibility = View.GONE
+
+        binding.txtEmptyTitle.text =
+            "Connect WhatsApp Status"
+
+        binding.txtEmptyDesc.text =
+            "One-time setup required"
+
+        binding.btnEmptyAction.text =
+            "Connect WhatsApp"
+
+        binding.btnEmptyAction.setOnClickListener {
+
+            StatusSetupBottomSheet {
+
+                openFolderPicker()
+
+            }.show(
+
+                childFragmentManager,
+
+                "setup"
+            )
+        }
+    }
+    private fun showNoStatusState() {
+
+        binding.layoutEmpty.visibility = View.VISIBLE
+        binding.rvStatuses.visibility = View.GONE
+
+        binding.txtEmptyTitle.text =
+            "No Recent Statuses"
+
+        binding.txtEmptyDesc.text =
+            "Open WhatsApp and view a friend's status first"
+
+        binding.btnEmptyAction.text =
+            "Open WhatsApp"
+
+        binding.btnEmptyAction.setOnClickListener {
+
+            val intent =
+                requireContext()
+                    .packageManager
+                    .getLaunchIntentForPackage(
+                        "com.whatsapp"
+                    )
+
+            if (intent != null) {
+
+                startActivity(intent)
+            }
+        }
+    }
+
+    private fun openFolderPicker() {
+
+        folderPicker.launch(null)
+    }
+    private fun showContentState() {
+
+        binding.layoutEmpty.visibility =
+            View.GONE
+
+        binding.rvStatuses.visibility =
+            View.VISIBLE
+    }
     override fun onResume() {
         super.onResume()
 
         updateFolderStatus()
 
         syncFilterChip()
+
+        viewModel.clearCache()
+
+        viewModel.loadStatuses(
+            forceRefresh = true
+        )
     }
 
     override fun onDestroyView() {
