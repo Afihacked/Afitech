@@ -13,7 +13,7 @@ android {
         viewBinding = true
         buildConfig = true
     }
-    val appVersionName = "0.0.15"
+    val appVersionName = "0.0.16"
 
     defaultConfig {
         applicationId = "com.afitech"
